@@ -1,8 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TinderCard from "react-tinder-card";
 import "./Tinder.css";
+import axios from 'axios'
+
+
 
 function MediaCard() {
+  const[loading,setloading] = useState(false);
+  const[data,setData] = useState([]);
+  useEffect(()=>{
+    setloading(true)
+    axios({
+      method:"GET",
+      url:"https://fakestoreapi.com/products",
+    }).then((res)=>{
+      console.log(res.data);
+      setData(res.data);
+    }).catch((e)=>console.log(e)).finally(()=>setloading(false))
+  },[]);
+
+
   const cards = [
     {
       id: 1,
@@ -39,14 +56,14 @@ function MediaCard() {
 
   return (
     <div className="card-container">
-      {cards.map(({ id, src, name }) => (
+      {data.map((product) => (
         <TinderCard className="swipe">
           <div
-            key={id}
+            key={product.id}
             className="cards"
-            style={{ backgroundImage: `url(${src})` }}
+            style={{ backgroundImage: `url(${product.image})` }}
           >
-            <h3 className="text-white">{name}</h3>
+            <h3 className="text-white">{product.title}</h3>
           </div>
         </TinderCard>
       ))}
